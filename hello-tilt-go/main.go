@@ -15,6 +15,8 @@ func main() {
 	engine.GET("/", func(c *gin.Context) {
 		c.JSON(http.StatusOK, gin.H{
 			"message": "Hands-on Tilt with Go",
+			"host":    os.Getenv("HOSTNAME"),
+			"version": "v1.0.0",
 		})
 	})
 

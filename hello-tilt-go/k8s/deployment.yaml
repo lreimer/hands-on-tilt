@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   name: hello-tilt-go
 spec:
-  replicas: 1
+  replicas: 2
   selector:
     matchLabels:
       app: hello-tilt-go
@@ -24,7 +24,7 @@ spec:
             cpu: "250m"
         env:
           - name: PORT
-            value: "8080"
+            value: "9090"
         ports:
         - name: http
-          containerPort: 8080
+          containerPort: 9090
