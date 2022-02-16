@@ -10,16 +10,17 @@ Create a `Tiltfile` in the project root and add the following content:
 local_resource('hello-tilt-go-compile',
   'CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build',
   dir='hello-tilt-go',
-  deps=['./hello-tilt-go/main.go'])
+  deps=['./hello-tilt-go/main.go'],
+  labels=['go'])
 
-# build the image
+# build the Go image
 docker_build('lreimer/hello-tilt-go', 'hello-tilt-go', 
   dockerfile='hello-tilt-go/Dockerfile',
   only=['./hello-tilt-go', "./favicon.ico"])
 
 # deploy and port forward to pod
 k8s_yaml(['hello-tilt-go/k8s/deployment.yaml', 'hello-tilt-go/k8s/service.yaml'])
-k8s_resource(workload='hello-tilt-go', port_forwards='18080:8080')
+k8s_resource(workload='hello-tilt-go', port_forwards='19090:9090', labels=['go'])
 ```
 
 The run `tilt up` in the console and get into the flow. Once finished do a `tilt down`.
