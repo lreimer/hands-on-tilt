@@ -1,0 +1,49 @@
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
+
+plugins {
+    id 'java'
+    id 'war'
+
+    id 'fish.payara.micro-gradle-plugin' version '1.1.0'
+    id 'com.google.cloud.tools.jib' version '3.2.0'
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    providedCompile 'jakarta.platform:jakarta.jakartaee-api:8.0.0'
+    providedCompile platform('org.eclipse.microprofile:microprofile:4.1')
+    providedCompile 'org.eclipse.microprofile.config:microprofile-config-api'
+}
+
+payaraMicro {
+    payaraVersion = '5.2021.8'
+    deployWar = true
+    useUberJar = false
+    daemon = false
+}
+
+task kick(dependsOn: clean) {}
+task wipe(dependsOn: clean) {}
+
+jib {
+    allowInsecureRegistries = true
+
+    from {
+        image = 'qaware/distroless-zulu-payara-micro:11.0.12-5.2021.8'
+    }
+    to {
+        image = 'lreimer/hello-tilt-java'
+    }
+    container {
+        appRoot = '/opt/payara/deployments/ROOT.war'
+        entrypoint = 'INHERIT'
+        args = ['--deploy', '/opt/payara/deployments/ROOT.war']
+        user = 'payara'
+        creationTime = "${DateTimeFormatter.ISO_DATE_TIME.format(LocalDateTime.now())}+01:00[Europe/Berlin]"
+        filesModificationTime = "${DateTimeFormatter.ISO_DATE_TIME.format(LocalDateTime.now())}+01:00[Europe/Berlin]"
+    }
+}

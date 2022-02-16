@@ -1,0 +1,24 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hello-tilt-java
+  labels:
+    type: microservice
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      type: microservice
+  template:
+    metadata:
+      labels:
+        type: microservice
+    spec:
+      containers:
+        - name: hello-tilt-java
+          image: lreimer/hello-tilt-java
+          envFrom:
+            - configMapRef:
+                name: microservice-configmap
+          ports:
+            - containerPort: 8080
